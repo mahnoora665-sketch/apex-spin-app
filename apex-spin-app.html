@@ -1,46 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-        body { background: #0f172a; color: white; text-align: center; margin: 0; }
-        
-        /* 3D Container */
-        .scene { 
-            width: 300px; height: 300px; margin: 50px auto;
-            perspective: 800px; /* 3D effect ke liye perspective zaruri hai */
-        }
-        
-        .wheel { 
-            width: 100%; height: 100%; border-radius: 50%;
-            border: 10px solid #1e293b;
-            transform: rotateX(45deg); /* 3D Tilt effect */
-            transform-style: preserve-3d;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            background: conic-gradient(red 0 36deg, blue 36deg 72deg, green 72deg 108deg, ...);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSpin - 3D Earn Now</title>
+    
+    <script src="//libtl.com/sdk.js" data-zone="11112610" data-sdk="show_11112610"></script>
 
-        .arrow { 
-            width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; 
-            border-top: 40px solid #ef4444; margin: 0 auto; z-index: 10;
+    <style>
+        body { background: #0f172a; color: white; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
+        .scene { width: 300px; height: 300px; margin: 50px auto; perspective: 800px; }
+        .wheel { 
+            width: 100%; height: 100%; border-radius: 50%; border: 10px solid #1e293b;
+            transform: rotateX(45deg); transform-style: preserve-3d;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: conic-gradient(red 0 36deg, blue 36deg 72deg, green 72deg 108deg, orange 108deg 144deg, purple 144deg 180deg, pink 180deg 216deg, cyan 216deg 252deg, yellow 252deg 288deg, #f90 288deg 324deg, #333 324deg 360deg);
         }
+        .btn { padding: 15px 25px; margin: 10px; border-radius: 10px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="arrow"></div>
-<div class="scene">
-    <div class="wheel" id="wheel"></div>
-</div>
+    <h3>Balance: $<span id="balance">0</span> | Spins Left: <span id="spins">5</span></h3>
 
-<button class="btn" onclick="spin()">Spin 3D</button>
+    <div class="scene">
+        <div class="wheel" id="wheel"></div>
+    </div>
 
-<script>
-    let deg = 0;
-    function spin() {
-        deg += 1440 + Math.floor(Math.random() * 360);
-        document.getElementById('wheel').style.transform = `rotateX(45deg) rotateZ(${deg}deg)`;
-    }
-</script>
+    <button class="btn" onclick="spin()">Spin Now!</button>
+    <button class="btn" style="background: #10b981;" onclick="watchAd()">Watch Ad (+5 Spins)</button>
+    <button class="btn" style="background: #ef4444;" onclick="withdraw()">Withdraw ($5000)</button>
+
+    <script>
+        let balance = 0;
+        let spins = 5;
+        let deg = 0;
+
+        function spin() {
+            if (spins <= 0) return alert("Spins khatam! Pehle Ad dekhein.");
+            spins--;
+            document.getElementById('spins').innerText = spins;
+            
+            deg += 1440 + Math.floor(Math.random() * 360);
+            document.getElementById('wheel').style.transform = `rotateX(45deg) rotateZ(${deg}deg)`;
+            
+            setTimeout(() => {
+                balance += 10; // Simple increment
+                document.getElementById('balance').innerText = balance;
+                alert("You won $10!");
+            }, 4000);
+        }
+
+        function watchAd() {
+            // Monetag Ad Trigger
+            if (typeof show_11112610 === 'function') {
+                show_11112610().then(() => {
+                    spins += 5;
+                    document.getElementById('spins').innerText = spins;
+                });
+            } else {
+                alert("Ad load ho rahi hai, thoda intezar karein.");
+            }
+        }
+
+        function withdraw() {
+            if (balance >= 5000) prompt("Enter USDT TRC-20 Address:");
+            else alert("Minimum withdrawal $5000 hai!");
+        }
+    </script>
 </body>
 </html>
